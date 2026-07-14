@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: -apple-system, Segoe UI, Arial, sans-serif; background:#0f1420; color:#e6e9f0; padding:40px; }
+    .card { max-width: 480px; margin:auto; background:#171c26; border:1px solid #262e3d; border-radius:8px; padding:28px; }
+    label { display:block; font-size:12px; color:#7c879b; text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px; margin-top:16px; }
+    input, textarea { width:100%; padding:10px; background:#0f1420; border:1px solid #262e3d; border-radius:5px; color:#e6e9f0; font-family: inherit; font-size:14px; box-sizing: border-box; }
+    button { margin-top:20px; background:#4f8fdb; color:#0c0f15; border:none; padding:10px 20px; border-radius:5px; font-weight:700; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>New Campaign</h2>
+    <form method="POST" action="/create-campaign">
+      <label>Campaign name</label>
+      <input type="text" name="campaign_name" required>
+
+      <label>Targets (one per line: Name, Email)</label>
+      <textarea name="targets" rows="6" placeholder="Erin, erin@example.com&#10;Rahul, rahul@example.com" required></textarea>
+
+      <button type="submit">Launch Campaign</button>
+    </form>
+  </div>
+</body>
+</html>

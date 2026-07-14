@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>PhishGuard Dashboard</title>
+<style>
+  :root {
+    --bg: #0f1420;
+    --panel: #171c26;
+    --panel-2: #1d2330;
+    --border: #262e3d;
+    --text: #e6e9f0;
+    --muted: #7c879b;
+    --critical: #e8543b;
+    --warning: #e0a23b;
+    --good: #4fbf8b;
+    --info: #4f8fdb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: radial-gradient(ellipse at top left, #141925 0%, var(--bg) 55%);
+    color: var(--text);
+    font-family: -apple-system, Segoe UI, Arial, sans-serif;
+    padding: 40px 30px;
+  }
+  .wrap { max-width: 1000px; margin: auto; }
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+  .header h1 { font-size: 24px; font-weight: 700; }
+  .new-btn {
+    background: var(--info); color: #0c0f15; text-decoration: none; font-weight: 700;
+    padding: 10px 18px; border-radius: 6px; font-size: 13.5px;
+  }
+  .new-btn:hover { filter: brightness(1.1); }
+
+  .summary { display: flex; gap: 16px; margin-bottom: 32px; }
+  .stat-card {
+    flex: 1; background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 20px; animation: fadeUp .4s ease both;
+  }
+  .stat-num { font-size: 30px; font-weight: 800; font-family: ui-monospace, monospace; }
+  .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-top: 4px; }
+  .stat-card.rate .stat-num { color: var(--critical); }
+
+  .campaign-list { display: flex; flex-direction: column; gap: 12px; }
+  .campaign-row {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 18px 22px;
+    display: grid; grid-template-columns: 1fr auto auto auto 140px; gap: 24px; align-items: center;
+    transition: border-color .15s ease, transform .15s ease;
+    animation: fadeUp .4s ease both;
+  }
+  .campaign-row:hover { border-color: var(--info); transform: translateY(-1px); }
+  .c-name { font-weight: 600; font-size: 14.5px; }
+  .c-date { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+  .metric { text-align: center; }
+  .metric-num { font-family: ui-monospace, monospace; font-size: 16px; font-weight: 700; }
+  .metric-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .metric.clicked .metric-num { color: var(--critical); }
+  .metric.opened .metric-num { color: var(--warning); }
+
+  .rate-wrap { display: flex; flex-direction: column; gap: 6px; }
+  .rate-track { background: #0c0f15; border-radius: 4px; height: 8px; overflow: hidden; }
+  .rate-fill { height: 100%; background: linear-gradient(90deg, var(--good), var(--warning), var(--critical)); border-radius: 4px; width: 0%; transition: width 1s ease; }
+  .rate-text { font-size: 11px; color: var(--muted); text-align: right; }
+
+  .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>PhishGuard Dashboard</h1>
+    <a class="new-btn" href="/new-campaign">+ New Campaign</a>
+  </div>
+
+  <div class="summary">
+    <div class="stat-card" style="animation-delay:.05s">
+      <div class="stat-num">{{ total_sent }}</div>
+      <div class="stat-label">Emails sent</div>
+    </div>
+    <div class="stat-card" style="animation-delay:.1s">
+      <div class="stat-num">{{ total_clicked }}</div>
+      <div class="stat-label">Total clicks</div>
+    </div>
+    <div class="stat-card rate" style="animation-delay:.15s">
+      <div class="stat-num">{{ overall_rate }}%</div>
+      <div class="stat-label">Overall click rate</div>
+    </div>
+  </div>
+
+  <div class="campaign-list">
+    {% if campaigns|length == 0 %}
+      <div class="empty">No campaigns yet. <a href="/new-campaign" style="color:var(--info)">Launch your first one.</a></div>
+    {% endif %}
+
+    {% for c in campaigns %}
+    <div class="campaign-row" style="animation-delay: {{ loop.index0 * 0.05 }}s">
+      <div>
+        <div class="c-name">{{ c.name }}</div>
+        <div class="c-date">{{ c.created_at }}</div>
+      </div>
+      <div class="metric">
+        <div class="metric-num">{{ c.sent }}</div>
+        <div class="metric-label">Sent</div>
+      </div>
+      <div class="metric opened">
+        <div class="metric-num">{{ c.opened }}</div>
+        <div class="metric-label">Opened</div>
+      </div>
+      <div class="metric clicked">
+        <div class="metric-num">{{ c.clicked }}</div>
+        <div class="metric-label">Clicked</div>
+      </div>
+      <div class="rate-wrap">
+        <div class="rate-track">
+          <div class="rate-fill" data-rate="{{ c.click_rate }}"></div>
+        </div>
+        <div class="rate-text">{{ c.click_rate }}% click rate</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  // Animate the rate bars filling in after the page loads
+  document.querySelectorAll('.rate-fill').forEach(bar => {
+    const rate = bar.dataset.rate;
+    setTimeout(() => { bar.style.width = rate + '%'; }, 150);
+  });
+</script>
+</body>
+</html>
