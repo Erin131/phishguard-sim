@@ -7,7 +7,17 @@ PhishGuard lets a security team run realistic, controlled phishing campaigns aga
 > Phishing remains one of the most common initial-access vectors in real breaches. The best way to build resistance to it isn't a slide deck — it's a safe, realistic simulation, followed by immediate, specific feedback.
 
 ---
+## 📸 Screenshots
 
+| Campaign Dashboard | Simulated Phishing Email |
+|---|---|
+| ![Dashboard](screenshots/dashboard.png) | ![Email](screenshots/email-preview.png) |
+
+| Awareness / "Gotcha" Page | New Campaign Form |
+|---|---|
+| ![Awareness](screenshots/awareness-page.png) | ![New Campaign](screenshots/new-campaign.png) |
+
+---
 ## Why this exists
 
 Most phishing awareness training happens in a slideshow, days or weeks removed from anything real. It doesn't stick. PhishGuard is built on a different premise: the most effective moment to teach someone what a phishing email looks like is **immediately after they've clicked one** — while it's fresh, specific, and personal, not abstract.
